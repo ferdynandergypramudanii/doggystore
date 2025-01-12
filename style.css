@@ -1,0 +1,12 @@
+a {
+     color: inherit;
+     /* Mengikuti warna teks elemen induk */
+     text-decoration: none;
+     /* Menghapus garis bawah */
+}
+
+.image-ratio {
+     width: 100%;
+     aspect-ratio: 16 / 9;
+     object-fit: cover;
+}
