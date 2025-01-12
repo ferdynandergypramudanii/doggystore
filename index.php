@@ -50,7 +50,7 @@ include "koneksi.php";
                                    Gallery</a>
                          </li>
                          <li class="nav-item">
-                              <a class="nav-link" href="#"><span><img
+                              <a class="nav-link" href="login.php"><span><img
                                              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAA7UlEQVRIS2NkoDFgpLH5DKRYcAboGCUgPgjEB6D0RSD9H58jSbEAm0HvgIYfgloIsvQSuoW4LAAp1MXhskSguCMQOwCxHJqak0C+BbIYLgvweRtZjxrQMGuoZXFQg1HMJGQBsjzMUlL04IxkbIaNWoCSHggFkTI0Od5D0oU1CEmJMGQDPgIN/g3EIrSy4DXQ4A9ArEorC0AZ7CcQv6SVBdgyOVXjYNQCvGU8ctKWAoaVOxDbAXECKYUdvuI6Glp6gopr5GQKMn8TEPsTU1zji0RkObIrHGwWgCoTkItpVmVis5SgGCl1MkHDsCkAAGHQTBkMWFBjAAAAAElFTkSuQmCC" /></span>
                                    Login</a>
                          </li>
@@ -77,7 +77,7 @@ include "koneksi.php";
           <div class="container">
                <div>
                     <h1>Pet shop</h1>
-                    <p>Berikut adalah daftar hewan anjing yang tersedia di toko kami</p>
+                    <p>Berikut adalah daftar hewan anjing yang tersedia di platform kami</p>
                </div>
                <div class="mt-5 d-flex justify-content-center flex-wrap gap-5">
                     <?php
