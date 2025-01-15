@@ -10,3 +10,12 @@ a {
      aspect-ratio: 16 / 9;
      object-fit: cover;
 }
+
+.hover-effect {
+     transition: all 0.3s ease;
+}
+
+.hover-effect:hover {
+     background-color: #cfe2ff;
+}
+
