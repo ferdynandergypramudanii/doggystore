@@ -77,7 +77,7 @@ include "upload_foto.php";
 if (isset($_POST['simpan'])) {
      $gambar = '';
      $id = $_POST['id'] ?? null;
-     $deskripsi = $_POST['deskripsi'] ?? '';  // Menangkap deskripsi dari form
+     $deskripsi = $_POST['deskripsi'] ?? '';
 
      // Jika ada file yang dikirim
      if (!empty($_FILES['gambar']['name'])) {

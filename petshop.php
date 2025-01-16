@@ -98,75 +98,84 @@
 <?php
 include "upload_foto.php";
 
+// Jika tombol simpan diklik
 if (isset($_POST['simpan'])) {
-     $nama = $_POST['nama'];
-     $tanggal = $_POST['tgl'];
-     $umur = $_POST['umur'];
-     $harga = $_POST['harga'];
-     $kelamin = $_POST['kelamin'];
-     $namaBreeder = $_POST['namabreeder'];
-     $lokasi = $_POST['lokasi'];
+     $nama = $_POST['nama'] ?? '';
+     $tanggal = $_POST['tgl'] ?? '';
+     $umur = $_POST['umur'] ?? '';
+     $harga = $_POST['harga'] ?? '';
+     $kelamin = $_POST['kelamin'] ?? '';
+     $namaBreeder = $_POST['namabreeder'] ?? '';
+     $lokasi = $_POST['lokasi'] ?? '';
      $gambar = '';
+     $id = $_POST['id'] ?? null;
 
-     $nama_gambar = $_FILES['gambar']['name'];
 
-     if ($nama_gambar != '') {
-          $cek_upload = upload_foto($_FILES["gambar"]);
-
-          if ($cek_upload['status']) {
-               $gambar = $cek_upload['message'];
-          } else {
+     // Jika ada file yang dikirim
+     if (!empty($_FILES['gambar']['name'])) {
+          // Validasi file gambar
+          $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+          if (!in_array($_FILES['gambar']['type'], $allowed_types)) {
                echo "<script>
-                alert('" . $cek_upload['message'] . "');
-                document.location='admin.php?page=petshop';
+            alert('Hanya file gambar yang diizinkan.');
+            document.location='admin.php?page=petshop';
             </script>";
                die;
           }
-     }
 
-     if (isset($_POST['id'])) {
-          $id = $_POST['id'];
+          // Penamaan otomatis gambar menggunakan timestamp
+          $extension = pathinfo($_FILES['gambar']['name'], PATHINFO_EXTENSION);
+          $gambar = time() . '.' . $extension;
 
-          if ($nama_gambar == '') {
-               $gambar = $_POST['gambar_lama'];
-          } else {
+          // Pindahkan file ke folder tujuan
+          if (!move_uploaded_file($_FILES['gambar']['tmp_name'], "img/" . $gambar)) {
+               echo "<script>
+            alert('Gagal mengunggah gambar.');
+            document.location='admin.php?page=petshop';
+            </script>";
+               die;
+          }
+
+          // Hapus gambar lama jika ada
+          if (!empty($_POST['gambar_lama']) && file_exists("img/" . $_POST['gambar_lama'])) {
                unlink("img/" . $_POST['gambar_lama']);
           }
 
-          $stmt = $conn->prepare("UPDATE dogshop 
-                                SET 
-                                nama_anjing = ?,
-                                tgl_lahir = ?,
-                                umur = ?,
-                                harga = ?,
-                                jenis_kelamin = ?,
-                                nama_toko_peternak = ?,
-                                kota_peternak = ?,
-                                gambar = ?
-                                WHERE id = ?");
 
-          $stmt->bind_param("ssssssssi", $nama, $tanggal, $umur, $harga, $kelamin, $namaBreeder, $lokasi, $gambar, $id);
-          $simpan = $stmt->execute();
      } else {
-          $stmt = $conn->prepare("INSERT INTO dogshop (gambar, nama_anjing, tgl_lahir, umur, harga, jenis_kelamin, nama_toko_peternak, kota_peternak)
-                                VALUES (?,?,?,?,?,?,?,?)");
-
-          $stmt->bind_param("ssssssss", $gambar, $nama, $tanggal, $umur, $harga, $kelamin, $namaBreeder, $lokasi);
-          $simpan = $stmt->execute();
+          // Jika tidak mengganti gambar, gunakan gambar lama
+          $gambar = $_POST['gambar_lama'];
      }
+
+
+
+     // Jika ID ada, lakukan update
+     if ($id) {
+          // Update data jika ID ada, termasuk deskripsi
+          $stmt = $conn->prepare("UPDATE dogshop 
+    SET gambar = ?, nama_anjing = ?, tgl_lahir = ?, umur = ?, harga = ?, jenis_kelamin = ?, nama_toko_peternak = ?, kota_peternak = ? 
+    WHERE id = ?");
+          $stmt->bind_param("ssssssssi", $gambar, $nama, $tanggal, $umur, $harga, $kelamin, $namaBreeder, $lokasi, $id);
+     } else {
+          // Insert data baru jika ID tidak ada, termasuk deskripsi
+          $stmt = $conn->prepare("INSERT INTO dogshop (gambar, nama_anjing, tgl_lahir, umur, harga, jenis_kelamin, nama_toko_peternak, kota_peternak) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+          $stmt->bind_param("ssssssss", $gambar, $nama, $tanggal, $umur, $harga, $kelamin, $namaBreeder, $lokasi);
+     }
+
+     $simpan = $stmt->execute();
 
      if ($simpan) {
           echo "<script>
-            alert('Simpan data sukses');
-            document.location='admin.php?page=petshop';
+        alert('Simpan data sukses');
+        document.location='admin.php?page=petshop';
         </script>";
      } else {
           echo "<script>
-            alert('Simpan data gagal');
-            document.location='admin.php?page=petshop';
+        alert('Simpan data gagal');
+        document.location='admin.php?page=petshop';
         </script>";
      }
-
      $stmt->close();
      $conn->close();
 }
